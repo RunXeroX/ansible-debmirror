@@ -1,0 +1,4 @@
+.vagrant
+hosts
+inventory.txt
+venv
