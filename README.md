@@ -6,15 +6,8 @@ This role sets up a mirrof of debian-style repositories using aptly.
 Requirements
 ------------
 
-**Host**
-
 None
 
-**Role**
-
-Installed automatically:
-
-- [Pxul](https://github.com/badi/pxul.git)
 
 Role Variables
 --------------
@@ -55,8 +48,6 @@ None
 
 Example Playbook
 ----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
     - hosts: all
       sudo: yes
