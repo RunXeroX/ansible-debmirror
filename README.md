@@ -1,7 +1,7 @@
-Role Name
+debmirror
 =========
 
-This role sets up a mirrof of debian-style repositories using aptly.
+This role sets up a mirror of debian-style repositories using aptly.
 
 Requirements
 ------------
