@@ -4,7 +4,7 @@
 
 - name: mirrors | Import the mirror keys
   sudo: no
-  gpg_import:
+  gpg_recv:
     key: "{{ item.trusted_key }}"
     keyring: "{{ item.keyring | default('trustedkeys.gpg') }}"
     keyserver: "{{ item.keyserver | default('keys.gnupg.net') }}"

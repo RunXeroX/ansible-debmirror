@@ -3,40 +3,33 @@
 
 import gnupg
 import sys
-import os.path
-import os
-
 
 
 def main():
     module = AnsibleModule(
         argument_spec={
-            'path': {'required': True},
+            'key': {'required': True},
             'keyring': {'required': False},
+            'keyserver': {'required': False},
         },
     )
 
-    # verbose needs to be False otherwise ansible cannot parse stdout
-    gpg = gnupg.GPG(keyring=module.params['keyring'], verbose=False)
+    gpg = gnupg.GPG(keyring=module.params['keyring'])
 
-    new_key = gpg.scan_keys(module.params['path'])[0]
-    for known_key in gpg.list_keys():
-        if new_key['fingerprint'] == known_key['fingerprint']:
-            module.exit_json(changed=False)
-
-    key = open(module.params['path']).read()
-    result = gpg.import_keys(key)
+    result = gpg.recv_keys(module.params['keyserver'],
+                           module.params['key'])
 
     # handle error cases
     if not result.fingerprints:
         module.fail_json(msg='Could not import the key',
                          results=result.results,
                          reasons=result.problem_reason,
-                         params=module.params)
+                         params=module.params
+        )
 
     # success
     elif result.unchanged == 0:
-        module.exit_json(changed=True)
+        module.exit_json(changed=True, )
     else:  # importing keys is idempotent
         module.exit_json(changed=False)
 

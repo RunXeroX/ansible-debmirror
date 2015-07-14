@@ -31,7 +31,10 @@
 - name: gpg | Import the keys
   sudo: no
   gpg_import:
-    key: "{{ mirror_gpg_pubfile }}"
+    path: "{{ item }}"
+  with_items:
+    - "{{ mirror_gpg_pubfile }}"
+    - "{{ mirror_gpg_secfile }}"
 
   # shell: gpg --import "{{ mirror_gpg_pubfile }}"
   # shell: gpg --allow-secret-key-import --import "{{ mirror_gpg_secfile }}"

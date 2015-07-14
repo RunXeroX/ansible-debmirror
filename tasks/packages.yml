@@ -2,7 +2,7 @@
 
 - meta: flush_handlers
 
-- name: packages | Install required packages
+- name: packages | Install system packages
   apt:
     pkg={{ item }}
     state=present
@@ -11,21 +11,18 @@
     - gnupg2
     - python-dev
     - python-pip
-    - python-gnupg
     - libffi-dev
     - git-core
-    - python-pexpect
     - apache2
 
-- name: packages | Upgrade Pip
+- name: packages | Install python packages
   pip:
     name={{ item }}
     state=latest
   with_items:
     - requests[security]
     - pip
+    - python-gnupg
+    - pexpect
+    - "git+https://github.com/badi/pxul.git@v2.0#egg=pxul"
 
-- name: packages | Install Pxul
-  pip:
-    name="git+https://github.com/badi/pxul.git@v2.0#egg=pxul"
-    state=present
