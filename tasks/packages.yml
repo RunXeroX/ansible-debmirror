@@ -1,0 +1,31 @@
+---
+
+- meta: flush_handlers
+
+- name: packages | Install required packages
+  apt:
+    pkg={{ item }}
+    state=present
+  with_items:
+    - aptly
+    - gnupg2
+    - python-dev
+    - python-pip
+    - python-gnupg
+    - libffi-dev
+    - git-core
+    - python-pexpect
+    - apache2
+
+- name: packages | Upgrade Pip
+  pip:
+    name={{ item }}
+    state=latest
+  with_items:
+    - requests[security]
+    - pip
+
+- name: packages | Install Pxul
+  pip:
+    name="git+https://github.com/badi/pxul.git@v2.0#egg=pxul"
+    state=present

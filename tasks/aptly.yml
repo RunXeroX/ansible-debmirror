@@ -1,6 +1,6 @@
 ---
 
-- name: (aptly) Add the aptly repository
+- name: aptly | Add the aptly repository
   lineinfile:
     dest=/etc/apt/sources.list.d/aptly.list
     line="deb http://repo.aptly.info/ squeeze main"
@@ -9,7 +9,7 @@
   notify:
     - Update apt cache
 
-- name: (aptly) Add the aptly key
+- name: aptly | Add the aptly key
   apt_key:
     keyserver=keys.gnupg.net
     id=E083A3782A194991

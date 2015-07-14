@@ -2,35 +2,7 @@
 
 - meta: flush_handlers
 
-- name: Install required packages
-  apt:
-    pkg={{ item }}
-    state=present
-  with_items:
-    - aptly
-    - gnupg2
-    - python-dev
-    - python-pip
-    - python-gnupg
-    - libffi-dev
-    - git-core
-    - python-pexpect
-    - apache2
-
-- name: Upgrade Pip
-  pip:
-    name={{ item }}
-    state=latest
-  with_items:
-    - requests[security]
-    - pip
-
-- name: Install Pxul
-  pip:
-    name="git+https://github.com/badi/pxul.git@v2.0#egg=pxul"
-    state=present
-
-- name: Import the mirror keys
+- name: mirrors | Import the mirror keys
   sudo: no
   gpg_import:
     key: "{{ item.trusted_key }}"
@@ -38,7 +10,7 @@
     keyserver: "{{ item.keyserver | default('keys.gnupg.net') }}"
   with_items: mirrors
 
-- name: Create the aptly mirrors
+- name: mirrors | Create the aptly mirrors
   sudo: no
   aptly:
     subject: mirror
@@ -50,7 +22,7 @@
     architectures: "{{ item.architectures | default(None)}}"
   with_items: mirrors
 
-- name: Update the aptly mirrors
+- name: mirrors | Update the aptly mirrors
   sudo: no
   aptly:
     subject: mirror
@@ -59,7 +31,7 @@
     within: "{{ item.within | default(0) }}"
   with_items: mirrors
 
-- name: Create snapshots
+- name: mirrors | Create snapshots
   sudo: no
   aptly:
     subject: snapshot
@@ -68,7 +40,7 @@
     within: "{{ item.within | default(0) }}"
   with_items: mirrors
 
-- name: Publish snapshots
+- name: mirrors | Publish snapshots
   sudo: no
   aptly:
     subject: publish
@@ -77,11 +49,11 @@
     gpg_passphrase: "{{ mirror_gpg_password | default(None) }}"
   with_items: mirrors
 
-- name: Make the GPG key available
+- name: mirrors | Make the GPG key available
   sudo: no
   shell: "gpg --export --armor > {{ mirror_server_docroot }}/Key.gpg"
 
-- name: Configure webserver
+- name: mirrors | Configure webserver
   template:
     src: mirrors.conf.j2
     dest: /etc/apache2/sites-available/000-default.conf

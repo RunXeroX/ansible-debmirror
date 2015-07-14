@@ -1,6 +1,6 @@
 ---
 
-- name: (gpg) Write the GPG key parameter files on host
+- name: gpg | Write the GPG key parameter files on host
   sudo: false
   local_action:
     module: template
@@ -8,17 +8,17 @@
               dest={{ mirror_gpg_tempfile }}
               mode=0600
 
-- name: (gpg) Create the GPG key on host
+- name: gpg | Create the GPG key on host
   sudo: false
   local_action:
     module: shell
               gpg --batch --gen-key {{ mirror_gpg_tempfile }}
 
-- name: (gpg) Remove temporary file
+- name: gpg | Remove temporary file
   sudo: no
   file: path={{ mirror_gpg_tempfile }} state=absent
 
-- name: (gpg) Copy over the generated keys
+- name: gpg | Copy over the generated keys
   sudo: no
   copy:
     src={{ item }}
@@ -28,12 +28,15 @@
     - "{{ mirror_gpg_pubfile }}"
     - "{{ mirror_gpg_secfile }}"
 
-- name: (gpg) Import the keys
+- name: gpg | Import the keys
   sudo: no
-  shell: gpg --import "{{ mirror_gpg_pubfile }}"
-  shell: gpg --allow-secret-key-import --import "{{ mirror_gpg_secfile }}"
+  gpg_import:
+    key: "{{ mirror_gpg_pubfile }}"
 
-- name: (gpg) Cleanup host
+  # shell: gpg --import "{{ mirror_gpg_pubfile }}"
+  # shell: gpg --allow-secret-key-import --import "{{ mirror_gpg_secfile }}"
+
+- name: gpg | Cleanup host
   sudo: no
   local_action:
     module: file
@@ -43,7 +46,7 @@
     - "{{ mirror_gpg_pubfile }}"
     - "{{ mirror_gpg_secfile }}"
 
-- name: (gpg) Cleanup remote
+- name: gpg | Cleanup remote
   sudo: no
   file:
     path="{{ item }}"
